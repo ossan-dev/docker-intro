@@ -1,10 +1,10 @@
-# Learn Docker in 5 steps
+# Docker: how to build & use your first image
 
 ## Hashtags
 
-docker, linux, sql
+docker, linux, sql, devops
 
-In this short blog post I'll explain u some basics about Docker. The goal is to build a custom image with a MS SQL Server database and make its sensitive data anonymous 🐱‍💻. If this sounds exciting to u, please stay with me as I walk you through this simple little process. If you get in trouble you can check the files in my GitHub repo linked [here](https://github.com/ivan-pesenti/docker-intro) .
+In this short blog post I'll explain u some basics about Docker. The goal is to build a custom image with a MS SQL Server database and make its sensitive data anonymous 🐱‍💻. If this sounds exciting to u, please stay with me as I walk you through this simple little process. If you get in trouble you can check the files in my GitHub repo linked [here](https://github.com/ivan-pesenti/docker-intro).
 
 ## Software requirements
 
@@ -15,15 +15,15 @@ To test the correctness of the demo u should have installed a client that could 
 
 These are the only two things needed to complete this post:
 
-1. A backup of a demo database. U can download [here](https://github.com/ivan-pesenti/docker-intro/blob/master/AdventureWorksLT2017.bak?raw=true)
+1. A backup of a demo database. U can download a sample from [here](https://github.com/ivan-pesenti/docker-intro/blob/master/AdventureWorksLT2017.bak?raw=true)
 1. T-SQL script to restore the db and anonymize the data. U can download [here](https://github.com/ivan-pesenti/docker-intro/blob/master/restore-db-and-mask-data.sql)
 
-I suggest u to copy this two files in the same directory on your file system.
+⭐HINT⭐ _I suggest u to copy this two files in the same directory on your file system._
 
 ## Dockerfile building
 
 This is the main part of the blog post so I'll try to deep dive in every statements of the Dockerfile in order to give u a better idea of their usage and options.  
-First, u have to create a file called "Dockerfile" in the folder where u placed the two ingredients above (be sure to **NOT** add any extension to the file, not ".txt", ".json", just "Dockerfile").  
+First, u have to create a file called "Dockerfile" in the folder where u placed the two ingredients above (⚠️WARNING⚠️ be sure to **NOT** add any extension to the file, not ".txt", ".json", just "Dockerfile").  
 Once you have created the file we can start to edit it.
 The first three lines to add are:
 
@@ -53,7 +53,7 @@ RUN /opt/mssql/bin/sqlservr --accept-eula & sleep 25 \
 
 With this statement we started the MS SQL server and we forced it to wait for 25 seconds in order to finish up the necessary startup actions such as starting the system databases, prepare the server to accept client connections and so on. If you find out that this delay is too high or too small per your machine, feel free to adjust it as u wish.  
 At the second line we use the SQLCMD utility to do a connection via CLI (command-line-interface) and we specify an input file to execute with the flag "-i" followed by the file's path on the target Linux machine. The statement terminates with a command that kills the server.  
-_Bonus tip: in order to split a single command among multiple lines use the combo "\" and "&&"_
+🔧BONUS TIP🔧 _in order to split a single command among multiple lines use the combo "\" and "&&"._
 
 ```
 FROM mcr.microsoft.com/mssql/server:2019-latest as release
@@ -71,14 +71,14 @@ This is the last statement of our Dockerfile. With this you'll copy the data fil
 ## Image building
 
 Now that our Dockerfile is ready to use we can build our user-defined image based on it.  
-First u've to open a shell from a terminal (e.g. Windows terminal, the VS Code built-in one, PowerShell and so on) and navigate to the directory with all of the files in this demo. After that you will be able to run this statement
+First you've to open a shell from a terminal (e.g. Windows terminal, the VS Code built-in one, PowerShell and so on) and navigate to the directory with all of the files in this demo. After that you will be able to run this statement:
 
 ```
 docker build -t my-custom-db .
 ```
 
-With this instruction you'll build an image called "my-custom-db" with the flag "-t" from a Dockerfile located in the current folder (**NOTE THE "." AT THE END OF THE LINE**). If your Dockerfile is not located in the current folder you've to specify its path otherwise it will result in an error.  
-_Important note: if u run this command multiple times without change anything u'll notice that Docker reuse steps from cache instead of rebuild them blindly. This is an amazing time savings that Docker will bring in our life 🍾_
+With this instruction you'll build an image called "my-custom-db" with the flag "-t" from a Dockerfile located in the current folder (🔴IMPORTANT❗🔴 **note the "." at the end of the line**). If your Dockerfile is not located in the current folder you've to specify its path otherwise it will result in an error.  
+🔎NOTE🔎 _if u run this command multiple times without change anything u'll notice that Docker reuse steps from cache instead of rebuild them blindly. This is an amazing time savings that Docker will bring in our life._
 
 ## Run a container
 
@@ -120,5 +120,5 @@ When you connect to the server you can find a database named AdventureWorks. In 
 
 Now you are able to build your user-defined image and do some simple stuff with Docker. One use-case is when you have to deal with backup that contain sensitive data. U cannot show them to anyone else. One way to achieve it could be this method so you can still work with consistent data while not exposing confidential info. In this post we only scratched the surface of Docker, there is plenty of other things that are worth to be aware of. This blog post is based upon a talk that you can see [here](https://youtu.be/xUR6Dcuopcw) .
 
-I hope you enjoy this post and find it useful. If you have any questions or you want to spot me some errors I really appreciate it and I'll make my best to follow up. If you enjoy it and would like to sustain me consider giving a like and sharing on your favourite socials.
+I hope you enjoy this post and find it useful. If you have any questions or you want to spot me some errors I really appreciate it and I'll make my best to follow up. If you enjoy it and would like to sustain me consider giving a like and sharing on your favorite socials.
 Stay safe and see you soon! 😎
